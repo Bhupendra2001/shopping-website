@@ -29,22 +29,28 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-    const user = await User.findOne({ username: req.body.username });
+
+    const {username , email} = req.body
+    if(!username) return res.status(401).json("please enter user name");
+    if(!email) return res.status(401).json("please enter  email");
+    const user = await User.findOne({ username });
 
     if(!user) return res.status(401).json("Wrong user name");
    
-   
-    const hashedPassword = CryptoJS.AES.decrypt(
-      user.password,
-      process.env.PASS_key
-    );
+    if(user.email !== email)
+    return  res.status(401).json("Wrong email");
+  
+    // const hashedPassword = CryptoJS.AES.decrypt(
+    //   user.password,
+    //   process.env.PASS_key
+    // );
 
-    const originalPassword = hashedPassword.toString(CryptoJS.enc.Utf8);
+    // const originalPassword = hashedPassword.toString(CryptoJS.enc.Utf8);
 
-    const inputPassword = req.body.password;
+    // const inputPassword = req.body.password;
 
-    if( originalPassword != inputPassword )
-    return  res.status(401).json("Wrong Password");
+    // if( originalPassword != inputPassword )
+    // return  res.status(401).json("Wrong Password");
 
    
 
