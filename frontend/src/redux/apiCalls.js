@@ -6,11 +6,12 @@ import {
   getProductStart,
   getProductSuccess,
 } from "./productRedux";
+import axios from "axios";
 
 export const login = async (dispatch, user, nevigate, setError) => {
   dispatch(loginStart());
   try {
-    const res = await publicRequest.post("/auth/login", user);
+    const res = await axios.post("https://shopping-website-mu.vercel.app/api/auth/login", user);
     dispatch(loginSuccess(res.data));
     nevigate("/");
   } catch (err) {
@@ -36,7 +37,7 @@ export const getProducts = async (dispatch) => {
   dispatch(getProductStart());
 
   try {
-    const res = await publicRequest.post("/products");
+    const res = await axios.post("https://shopping-website-mu.vercel.app/api/products");
 
     dispatch(getProductSuccess(res.data));
   } catch (err) {

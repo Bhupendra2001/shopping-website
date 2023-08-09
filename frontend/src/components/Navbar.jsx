@@ -151,7 +151,7 @@ const Navbar = () => {
 
           <Link to="/cart">
             <ManuItem>
-              <Badge badgeContent={quantity} color="primary">
+              <Badge badgeContent={quantity} color="primary" overlap="rectangular">
                 {" "}
                 <ShoppingCartOutlined />{" "}
               </Badge>

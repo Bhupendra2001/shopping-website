@@ -67,6 +67,7 @@ export const Login = () => {
   const [username , setUsername] = useState('')
   const [password , setPassword] = useState('')
  const [ error , setError] = useState(false)
+ console.log(username , password)
   const dispatch = useDispatch()
   const {isFetching  } = useSelector((state)=> state.user)
   const nevigate =  useNavigate()
