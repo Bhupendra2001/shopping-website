@@ -35,7 +35,7 @@ const login = async (req, res) => {
     if(!email) return res.status(401).json("please enter  email");
     const user = await User.findOne({ username });
 
-    // if(!user) return res.status(401).json("Wrong user name");
+     if(!user) return res.status(401).json("Wrong user name");
    
     // if(user.email !== email)
     // return  res.status(401).json("Wrong email");
@@ -56,8 +56,8 @@ const login = async (req, res) => {
 
     const accessToken = jwt.sign(
       {
-        id: user._id,
-        isAdmin: user.isAdmin,
+        email: email,
+        user: username,
       },
       process.env.JWT_SEC,
       { expiresIn: "7d" }
