@@ -1,6 +1,7 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
-const CryptoJS = require("crypto-js");
+const bcrypt = require("bcrypt");
+const saltRounts = 10;
 require("dotenv").config();
 
 const register = async (req, res) => {
@@ -18,13 +19,15 @@ const register = async (req, res) => {
 
     if (check.length !== 0)
       return res.status(400).send("User name or email aleady registers");
+
+      const salt = await bcrypt.genSalt(saltRounts);
+    const HassPassword = await bcrypt.hash(password, salt);
+    req.body["password"] = HassPassword;
+
     const newUser = new User({
       username,
       email,
-      password: CryptoJS.AES.encrypt(
-        req.body.password,
-        process.env.Pass_key
-      ).toString(),
+      password: req.body.password
     });
 
     await newUser.save();
