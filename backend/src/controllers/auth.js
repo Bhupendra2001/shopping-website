@@ -1,19 +1,26 @@
 const User = require("../models/User");
 const jwt = require("jsonwebtoken");
 const CryptoJS = require("crypto-js");
-const { uploadFile} = require('../aws')
 require("dotenv").config();
 
 const register = async (req, res) => {
+  const { firstName, lastName, email } = req.body;
+  const username = firstName + " " + lastName;
   try {
-    let check = await User.findOne({
-      email: req.body.email,
-      username: req.body.username,
+    let check = await User.find({
+      $or: [
+        { email },
+        {
+          username,
+        },
+      ],
     });
-    if (check) return res.status(400).send("User aleady registers");
+
+    if (check.length !== 0)
+      return res.status(400).send("User name or email aleady registers");
     const newUser = new User({
-      username: req.body.firstName + " " + req.body.lastName,
-      email: req.body.email,
+      username,
+      email,
       password: CryptoJS.AES.encrypt(
         req.body.password,
         process.env.Pass_key
@@ -29,47 +36,37 @@ const register = async (req, res) => {
 
 const login = async (req, res) => {
   try {
-
-    const {username , email} = req.body
-    if(!username) return res.status(401).json("please enter user name");
-    if(!email) return res.status(401).json("please enter  email");
+    const { username, password } = req.body;
+    if (!username) return res.status(400).json("please enter user name");
+    if (!password) return res.status(400).json("please enter  password");
     const user = await User.findOne({ username });
 
-    // if(!user) return res.status(401).json("Wrong user name");
-   
-    // if(user.email !== email)
-    // return  res.status(401).json("Wrong email");
+    if (!user) return res.status(401).json("Wrong user name");
 
-    // const hashedPassword = CryptoJS.AES.decrypt(
-    //   user.password,
-    //   process.env.PASS_key
-    // );
+    const hashedPassword = CryptoJS.AES.decrypt(
+      user.password,
+      process.env.PASS_key
+    );
 
-    // const originalPassword = hashedPassword.toString(CryptoJS.enc.Utf8);
+    const originalPassword = hashedPassword.toString(CryptoJS.enc.Utf8);
 
-    // const inputPassword = req.body.password;
+    const inputPassword = req.body.password;
 
-    // if( originalPassword != inputPassword )
-    // return  res.status(401).json("Wrong Password");
+    if (originalPassword != inputPassword)
+      return res.status(401).json("Wrong Password");
 
-   
+    const accessToken = jwt.sign(
+      {
+        id: user._id,
+      },
+      process.env.JWT_SEC,
+      { expiresIn: "7d" }
+    );
 
-    // const accessToken = jwt.sign(
-    //   {
-    //     email: email,
-    //     user: username,
-    //   },
-    //   process.env.JWT_SEC,
-    //   { expiresIn: "7d" }
-    // );
-
-  //  const { password, ...others } = user._doc;
-    return res.status(200).send({ data : user });
+    return res.status(200).send({ user, accessToken });
   } catch (err) {
     return res.status(500).send(err.message);
   }
 };
 
-
-
-module.exports = { register, login  }
+module.exports = { register, login };
