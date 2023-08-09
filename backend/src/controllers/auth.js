@@ -35,7 +35,7 @@ const login = async (req, res) => {
     if(!email) return res.status(401).json("please enter  email");
     const user = await User.findOne({ username });
 
-     if(!user) return res.status(401).json("Wrong user name");
+    // if(!user) return res.status(401).json("Wrong user name");
    
     // if(user.email !== email)
     // return  res.status(401).json("Wrong email");
@@ -54,17 +54,17 @@ const login = async (req, res) => {
 
    
 
-    const accessToken = jwt.sign(
-      {
-        email: email,
-        user: username,
-      },
-      process.env.JWT_SEC,
-      { expiresIn: "7d" }
-    );
+    // const accessToken = jwt.sign(
+    //   {
+    //     email: email,
+    //     user: username,
+    //   },
+    //   process.env.JWT_SEC,
+    //   { expiresIn: "7d" }
+    // );
 
   //  const { password, ...others } = user._doc;
-    return res.status(200).send({ user , accessToken });
+    return res.status(200).send({ data : user });
   } catch (err) {
     return res.status(500).send(err.message);
   }
