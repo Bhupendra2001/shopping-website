@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken')
-
+require('dotenv').config()
 const Authentication = (req,res, next)=>{
     const authHeader = req.headers.token;
    

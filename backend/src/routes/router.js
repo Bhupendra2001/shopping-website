@@ -53,7 +53,9 @@ router.get('/orders/income', CheckAdmin , getincome)
 router.post('/Email/:email', SendMail)
 router.post('/forgotPassword/:username', forgotPassword)
 
-
+router.get('/', (req, res)=>{
+    return res.status(200).send('welcome to shopping page server')
+})
 router.all("/*",(req,res)=>{
     return res.status(400).send({status:false,msg:"your end point is wrong"})
 })
