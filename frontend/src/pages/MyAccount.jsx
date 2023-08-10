@@ -42,7 +42,7 @@ const Title = styled.h2`
 `;
 
 export const MyAccount = () => {
-  const user = useSelector((state) => state.user.currentUser);
+  const user = useSelector((state) => state.user.currentUser.getUser);
 
   const style = {
     color: "blue",
