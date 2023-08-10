@@ -1,15 +1,14 @@
 const User = require('../models/User')
-const CryptoJS = require('crypto-js')
+const bcrypt = require("bcrypt");
+const saltRounts = 10;
 require('dotenv').config()
 
 
 const update = async (req,res)=>{
 
     if(req.body.password){
-        req.body.password = CryptoJS.AES.encrypt(
-            req.body.password,
-           process.env.PASS_key
-        ).toString();
+        const salt = await bcrypt.genSalt(saltRounts);
+        req.body.password =  await bcrypt.hash(password, salt);
     }
 
     try {
